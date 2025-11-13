@@ -59,7 +59,7 @@ Nenhuma dependência externa. Nenhum framework. Apenas a essência crua.
 1. Baixe ou clone este repositório:
 
 ```bash
-git clone https://github.com/SEU_USUARIO/poeta-sarcastico.git
+git clone https://github.com/mgabrielramos/poeta-sarcastico.git
 ```
 
 2. Coloque o projeto em qualquer servidor com suporte a PHP:
