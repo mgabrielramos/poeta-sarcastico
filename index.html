@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerador de Poemas Sarcásticos Técnico-Filosóficos</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 2rem;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background: #020617;
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem 2rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      border: 1px solid #1e293b;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 0.4rem 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #1f2933;
+      background: #020617;
+      color: #e5e7eb;
+      outline: none;
+    }
+
+    input[type="number"]:focus {
+      border-color: #4f46e5;
+    }
+
+    button {
+      margin-top: 0.75rem;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      border: none;
+      background: #4f46e5;
+      color: #e5e7eb;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      filter: brightness(1.1);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .field {
+      flex: 1 1 120px;
+    }
+
+    pre {
+      background: #020617;
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid #1e293b;
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-height: 120px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .status {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-top: 0.3rem;
+      min-height: 1em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Gerador de Poemas Sarcásticos Técnico-Filosóficos</h1>
+    <div class="subtitle">
+      Poesia ácida alimentada por física, filosofia e leve desprezo pelo coaching quântico.
+    </div>
+
+    <div class="controls">
+      <div class="field">
+        <label for="lines">Número de versos</label>
+        <input id="lines" type="number" min="2" max="16" value="6">
+      </div>
+      <div>
+        <button id="generateBtn">Gerar poema</button>
+        <div class="status" id="status"></div>
+      </div>
+    </div>
+
+    <pre id="poemBox">Clique em "Gerar poema" para invocar a musa sarcástica.</pre>
+  </div>
+
+  <script>
+    const btn = document.getElementById('generateBtn');
+    const linesInput = document.getElementById('lines');
+    const poemBox = document.getElementById('poemBox');
+    const statusEl = document.getElementById('status');
+
+    async function generatePoem() {
+      const lines = parseInt(linesInput.value, 10) || 6;
+
+      btn.disabled = true;
+      statusEl.textContent = 'Gerando...';
+      poemBox.textContent = '';
+
+      try {
+        const resp = await fetch('generator.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            lines,
+            seed: Date.now()  // opcional: muda a cada clique
+          })
+        });
+
+        if (!resp.ok) {
+          throw new Error('Erro HTTP: ' + resp.status);
+        }
+
+        const data = await resp.json();
+        const text = data?.text || '[nenhum poema retornado]';
+
+        poemBox.textContent = text;
+        statusEl.textContent = 'Pronto.';
+      } catch (err) {
+        console.error(err);
+        poemBox.textContent = 'Algo quebrou no laboratório. Verifique o console.';
+        statusEl.textContent = 'Erro ao gerar.';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    btn.addEventListener('click', generatePoem);
+  </script>
+</body>
+</html>
